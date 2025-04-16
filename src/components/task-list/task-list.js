@@ -1,7 +1,8 @@
 import './task-list.css';
 import Task from '../task';
+import TaskEdit from './task-edit';
 
-const TaskList = ({ todos, onToggleTask, onDeleted }) => {
+const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) => {
     
     const items = todos.map((item) => {
         const {status, description, id} = item;
@@ -10,12 +11,10 @@ const TaskList = ({ todos, onToggleTask, onDeleted }) => {
                 <Task 
                     description={description}
                     onDeleted={() => onDeleted(id)} 
-                    onToggleTask={() => onToggleTask(id)}/>
-                <input 
-                    type='text'
-                    className='edit' 
-                    defaultValue='Editing status' 
-                />
+                    onToggleTask={() => onToggleTask(id)}
+                    onEdit={() => onEditTask(id)}/>
+                <TaskEdit 
+                    onSubmit={onChangeTask} />
             </li>
         )
     });

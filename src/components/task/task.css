@@ -96,11 +96,6 @@
 	padding: 15px 85px 15px 60px;
 }
 
-.todo-list li label .created {
-	font-size: 13px;
-	color: gray;
-}
-
 .todo-list li label .description {
 	word-break: break-all;
 	display: block;

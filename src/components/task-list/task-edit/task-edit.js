@@ -1,7 +1,7 @@
-import './new-task-form.css';
+import './task-edit.css';
 import React, { Component } from 'react';
 
-export default class NewTaskForm extends Component{
+export default class TaskEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ export default class NewTaskForm extends Component{
     
     onSubmit = (e) => {
         e.preventDefault();
-        this.props.onAddItem(this.state.label);
+        this.props.onSubmit(this.state.label);
 
         this.setState({
             label: ''
@@ -29,12 +29,11 @@ export default class NewTaskForm extends Component{
             <form onSubmit={this.onSubmit}>
                 <input 
                     type='text'
-                    className="new-todo"
-                    placeholder="What needs to be done?" 
-                    autoFocus 
+                    className='edit' 
+                    defaultValue='Editing status'  
                     onChange={this.onLabelChange}
-                    value={this.state.label}
-                /> 
+                    value={this.state.label}                   
+                />
             </form>
         )
     }

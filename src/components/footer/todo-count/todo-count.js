@@ -1,8 +1,8 @@
 import './todo-count.css';
 
-const TodoCount = () => {
+const TodoCount = ({ count }) => {
     return (
-        <span className='todo-count'>1 items left</span>
+        <span className='todo-count'>{`${count} items left`}</span>
     )
 }
 
