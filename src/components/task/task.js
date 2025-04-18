@@ -1,7 +1,8 @@
 import "./task.css";
-import Timer from "./data/data";
 import React from "react";
 import PropTypes from "prop-types";
+
+import Timer from "./timer";
 
 const Task = ({ description, onToggleTask, onDeleted, onEdit }) => {
   return (

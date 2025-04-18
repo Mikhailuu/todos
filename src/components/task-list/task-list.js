@@ -1,8 +1,10 @@
 import "./task-list.css";
-import Task from "../task";
-import TaskEdit from "./task-edit";
 import React from "react";
 import PropTypes from "prop-types";
+
+import Task from "../task";
+
+import TaskEdit from "./task-edit";
 
 const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) => {
   const items = todos.map((item) => {
@@ -15,7 +17,7 @@ const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) 
           onToggleTask={() => onToggleTask(id)}
           onEdit={() => onEditTask(id)}
         />
-        <TaskEdit defaultValue={description} onSubmit={onChangeTask} />
+        <TaskEdit defaultValue={description} onSubmit={onChangeTask} status={status} />
       </li>
     );
   });

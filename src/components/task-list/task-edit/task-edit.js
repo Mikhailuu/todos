@@ -1,5 +1,5 @@
 import "./task-edit.css";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 
 export default class TaskEdit extends Component {
@@ -7,17 +7,26 @@ export default class TaskEdit extends Component {
     super(props);
     this.state = {
       label: "",
+      inputRef: createRef(),
     };
+  }
+
+  componentDidUpdate() {
+    if (this.props.status === "editing") {
+      this.state.inputRef.current.focus();
+    }
   }
 
   static defaultProps = {
     onSubmit: () => {},
     defaultValue: "",
+    status: "",
   };
 
   static propTypes = {
     onSubmit: PropTypes.func,
     defaultValue: PropTypes.string,
+    status: PropTypes.string,
   };
 
   onLabelChange = (e) => {
@@ -28,11 +37,12 @@ export default class TaskEdit extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state.label);
+    const label = this.state.label === "" ? this.props.defaultValue : this.state.label;
+    this.props.onSubmit(label);
 
     this.setState({
       label: "",
-    });
+    }); // надо убрать - заметка пустеет при отправке без редактирования
   };
 
   render() {
@@ -43,6 +53,7 @@ export default class TaskEdit extends Component {
           className="edit"
           defaultValue={this.props.defaultValue}
           onChange={this.onLabelChange}
+          ref={this.state.inputRef}
         />
       </form>
     );

@@ -1,4 +1,4 @@
-import "./data.css";
+import "./timer.css";
 import { formatDistanceToNow } from "date-fns";
 import PropTypes from "prop-types";
 import React, { Component } from "react";

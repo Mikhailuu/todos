@@ -86,8 +86,7 @@ export default class App extends Component {
   };
 
   filterItems = (filter) => {
-    const todos = this.state.todoData;
-
+    let todos = this.state.todoData;
     switch (filter) {
       default:
         return todos;
@@ -114,7 +113,7 @@ export default class App extends Component {
     this.EDIT_ID = id;
     const todoData = this.state.todoData;
     const [editingTask] = todoData.filter((item) => item.id === id);
-    editingTask.status = "editing";
+    [editingTask.oldStatus, editingTask.status] = [editingTask.status, "editing"];
 
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((item) => item.id === id);
@@ -127,12 +126,11 @@ export default class App extends Component {
   };
 
   onChangeTask = (text) => {
-    console.log(text);
     text = !text.trim() ? "Empty" : text.trim();
 
     const todoData = this.state.todoData;
     const [editingTask] = todoData.filter((item) => item.id === this.EDIT_ID);
-    editingTask.status = "active";
+    editingTask.status = editingTask.oldStatus;
     editingTask.description = text;
 
     this.setState(({ todoData }) => {
