@@ -20,8 +20,8 @@ export default class App extends Component {
         id: 2,
       },
       {
-        status: "completed",
-        description: "Completed task",
+        status: "active",
+        description: "Active task",
         id: 3,
       },
     ],

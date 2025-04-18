@@ -75,7 +75,7 @@
   },
   "lint-staged": {
     "*.(js|jsx)": [
-      "npm run lint && npm run format"
+      "npm run lint"
     ]
   }
 }
