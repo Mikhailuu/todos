@@ -7,6 +7,21 @@ import React, { Component } from "react";
 export default class App extends Component {
   MAX_ID = 100;
   EDIT_ID = 0;
+
+  loadTasks = () => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks)
+      this.setState({
+        todoData: JSON.parse(savedTasks),
+      });
+  };
+
+  componentDidMount() {
+    this.loadTasks();
+  }
+  componentDidUpdate() {
+    localStorage.setItem("tasks", JSON.stringify(this.state.todoData));
+  }
   state = {
     todoData: [
       {
@@ -74,7 +89,6 @@ export default class App extends Component {
 
     this.setState(({ todoData }) => {
       const newTodo = [...todoData, newItem];
-
       return {
         todoData: newTodo,
       };
