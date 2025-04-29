@@ -19,24 +19,38 @@ export default class App extends Component {
   componentDidMount() {
     this.loadTasks();
   }
+
   componentDidUpdate() {
     localStorage.setItem("tasks", JSON.stringify(this.state.todoData));
   }
+
   state = {
     todoData: [
       {
         status: "active",
         description: "Active task",
+        duration: {
+          min: 12,
+          sec: 30,
+        },
         id: 1,
       },
       {
         status: "active",
         description: "Active task",
+        duration: {
+          min: 12,
+          sec: 30,
+        },
         id: 2,
       },
       {
         status: "active",
         description: "Active task",
+        duration: {
+          min: 12,
+          sec: 30,
+        },
         id: 3,
       },
     ],
@@ -78,15 +92,18 @@ export default class App extends Component {
     });
   };
 
-  addItem = (text) => {
+  addItem = (text, min, sec) => {
     text = !text.trim() ? "Empty" : text.trim();
 
     const newItem = {
       status: "active",
       description: text,
+      duration: {
+        min,
+        sec,
+      },
       id: this.MAX_ID++,
     };
-
     this.setState(({ todoData }) => {
       const newTodo = [...todoData, newItem];
       return {

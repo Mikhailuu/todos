@@ -7,6 +7,8 @@ export default class NewTaskForm extends Component {
     super(props);
     this.state = {
       label: "",
+      min: "",
+      sec: "",
     };
   }
 
@@ -18,31 +20,63 @@ export default class NewTaskForm extends Component {
     onAddItem: PropTypes.func,
   };
 
-  onLabelChange = (e) => {
+  onChange = (e) => {
     this.setState({
-      label: e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.onAddItem(this.state.label);
+
+    if (this.state.label !== "")
+      this.props.onAddItem(this.state.label, this.state.min, this.state.sec);
 
     this.setState({
       label: "",
+      min: "",
+      sec: "",
     });
   };
 
+  onKeyDown = (event) => {
+    if (event.key === "Enter") {
+      this.onSubmit(event);
+    }
+  };
   render() {
     return (
-      <form onSubmit={this.onSubmit}>
+      <form className="new-todo-form" onKeyDown={this.onKeyDown}>
         <input
           type="text"
           className="new-todo"
-          placeholder="What needs to be done?"
+          name="label"
+          placeholder="Task"
           autoFocus
-          onChange={this.onLabelChange}
+          onChange={(e) => this.onChange(e)}
           value={this.state.label}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          min="0"
+          className="new-todo-form__timer"
+          name="min"
+          placeholder="Min"
+          autoFocus
+          onChange={(e) => this.onChange(e)}
+          value={this.state.min}
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          min="0"
+          className="new-todo-form__timer"
+          name="sec"
+          placeholder="Sec"
+          autoFocus
+          onChange={(e) => this.onChange(e)}
+          value={this.state.sec}
         />
       </form>
     );

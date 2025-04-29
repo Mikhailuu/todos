@@ -8,11 +8,12 @@ import TaskEdit from "./task-edit";
 
 const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) => {
   const items = todos.map((item) => {
-    const { status, description, id } = item;
+    const { status, description, id, duration } = item;
     return (
       <li key={id} className={status}>
         <Task
           description={description}
+          duration={duration}
           onDeleted={() => onDeleted(id)}
           onToggleTask={() => onToggleTask(id)}
           onEdit={() => onEditTask(id)}

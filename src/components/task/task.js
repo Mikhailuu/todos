@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 
 import Timer from "./timer";
 
-const Task = ({ description, onToggleTask, onDeleted, onEdit }) => {
+const Task = ({ description, duration, onToggleTask, onDeleted, onEdit }) => {
   return (
     <div className="view">
       <input className="toggle" type="checkbox" onClick={onToggleTask}></input>
       <label>
-        <span className="description">{description}</span>
-        <Timer date={new Date()} />
+        <span className="title">{description}</span>
+        <Timer date={new Date()} duration={duration} />
       </label>
       <button className="icon icon-edit" onClick={onEdit}></button>
       <button className="icon icon-destroy" onClick={onDeleted}></button>
