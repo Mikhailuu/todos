@@ -30,7 +30,7 @@ export default class NewTaskForm extends Component {
     e.preventDefault();
 
     if (this.state.label !== "")
-      this.props.onAddItem(this.state.label, this.state.min, this.state.sec);
+      this.props.onAddItem(this.state.label, this.state.min * 60 + Number(this.state.sec), false);
 
     this.setState({
       label: "",

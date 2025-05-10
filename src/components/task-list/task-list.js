@@ -6,7 +6,15 @@ import Task from "../task";
 
 import TaskEdit from "./task-edit";
 
-const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) => {
+const TaskList = ({
+  todos,
+  onToggleTask,
+  onDeleted,
+  onEditTask,
+  onChangeTask,
+  onTimerPlay,
+  onTimerStop,
+}) => {
   const items = todos.map((item) => {
     const { status, description, id, duration } = item;
     return (
@@ -17,6 +25,8 @@ const TaskList = ({ todos, onToggleTask, onDeleted, onEditTask, onChangeTask }) 
           onDeleted={() => onDeleted(id)}
           onToggleTask={() => onToggleTask(id)}
           onEdit={() => onEditTask(id)}
+          onTimerPlay={() => onTimerPlay(id)}
+          onTimerStop={() => onTimerStop(id)}
         />
         <TaskEdit defaultValue={description} onSubmit={onChangeTask} status={status} />
       </li>

@@ -16,12 +16,27 @@ export default class App extends Component {
       });
   };
 
+  timerTask = () => {
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({
+        todoData: prevState.todoData.map((task) =>
+          task.isRunning && task.duration > 0 ? { ...task, duration: task.duration - 1 } : task,
+        ),
+      }));
+    }, 1000);
+  };
+
   componentDidMount() {
     this.loadTasks();
+    this.timerTask();
   }
 
   componentDidUpdate() {
     localStorage.setItem("tasks", JSON.stringify(this.state.todoData));
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   state = {
@@ -29,32 +44,24 @@ export default class App extends Component {
       {
         status: "active",
         description: "Active task",
-        duration: {
-          min: 12,
-          sec: 30,
-        },
+        duration: 120,
         id: 1,
       },
       {
         status: "active",
         description: "Active task",
-        duration: {
-          min: 12,
-          sec: 30,
-        },
+        duration: 240,
         id: 2,
       },
       {
         status: "active",
         description: "Active task",
-        duration: {
-          min: 12,
-          sec: 30,
-        },
+        duration: 360,
         id: 3,
       },
     ],
     tab: "all",
+    timer: null,
   };
 
   toggleTask = (id) => {
@@ -92,16 +99,14 @@ export default class App extends Component {
     });
   };
 
-  addItem = (text, min, sec) => {
+  addItem = (text, duration, isRunning) => {
     text = !text.trim() ? "Empty" : text.trim();
 
     const newItem = {
       status: "active",
       description: text,
-      duration: {
-        min,
-        sec,
-      },
+      duration,
+      isRunning,
       id: this.MAX_ID++,
     };
     this.setState(({ todoData }) => {
@@ -122,7 +127,10 @@ export default class App extends Component {
       default:
         return todos;
       case "active":
-        return todos.filter((item) => item.status === "active");
+        return todos.filter((item) => {
+          console.log(item);
+          return item.status === "active";
+        });
       case "completed":
         return todos.filter((item) => item.status === "completed");
     }
@@ -174,6 +182,34 @@ export default class App extends Component {
     });
   };
 
+  onTimerPlay = (id) => {
+    const todoData = this.state.todoData;
+    const [playTask] = todoData.filter((item) => item.id === id);
+    playTask.isRunning = true;
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((item) => item.id === id);
+      const newData = [...todoData.slice(0, idx), playTask, ...todoData.slice(idx + 1)];
+
+      return {
+        todoData: newData,
+      };
+    });
+  };
+
+  onTimerStop = (id) => {
+    const todoData = this.state.todoData;
+    const [playTask] = todoData.filter((item) => item.id === id);
+    playTask.isRunning = false;
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((item) => item.id === id);
+      const newData = [...todoData.slice(0, idx), playTask, ...todoData.slice(idx + 1)];
+
+      return {
+        todoData: newData,
+      };
+    });
+  };
+
   render() {
     return (
       <section className="todoapp">
@@ -188,6 +224,8 @@ export default class App extends Component {
             onToggleTask={this.toggleTask}
             onEditTask={this.handleEditTask}
             onChangeTask={this.onChangeTask}
+            onTimerPlay={this.onTimerPlay}
+            onTimerStop={this.onTimerStop}
           />
           <Footer
             count={this.countItems(this.state)}
