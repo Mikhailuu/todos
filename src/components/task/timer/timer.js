@@ -1,24 +1,10 @@
 import "./timer.css";
 import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const Timer = ({ date, onTimerPlay, onTimerStop, duration }) => {
-  const [state, setState] = useState({
-    date: date ? formatDistanceToNow(new Date(date), { includeSeconds: true }) : "Invalid date",
-    timer: null,
-  });
-
-  useEffect(() => {
-    const distanceDate = setInterval(() => {
-      setState({
-        date: date ? formatDistanceToNow(new Date(date), { includeSeconds: true }) : "Invalid date",
-      });
-    }, 1000);
-
-    return () => clearInterval(distanceDate);
-  }, []);
-
+const Timer = ({ createdAt, onTimerPlay, onTimerStop, duration }) => {
   const handlePlay = () => {
     onTimerPlay();
   };
@@ -42,7 +28,13 @@ const Timer = ({ date, onTimerPlay, onTimerStop, duration }) => {
         <button className="icon icon-pause" onClick={handlePause}></button>
         {getTimeRemaining(duration)}
       </span>
-      <span className="description">{state.date}</span>
+      <span className="description">
+        {formatDistanceToNow(new Date(createdAt), {
+          includeSeconds: true,
+          addSuffix: true,
+          locale: ru,
+        })}
+      </span>
     </React.Fragment>
   );
 };

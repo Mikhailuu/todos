@@ -8,6 +8,8 @@ import TaskEdit from "./task-edit";
 
 const TaskList = ({
   todos,
+  isEditingAnyTask,
+  editingId,
   onToggleTask,
   onDeleted,
   onEditTask,
@@ -16,15 +18,20 @@ const TaskList = ({
   onTimerStop,
 }) => {
   const items = todos.map((item) => {
-    const { status, description, id, duration } = item;
+    const { status, description, id, duration, createdAt } = item;
     return (
       <li key={id} className={status}>
         <Task
+          taskId={id}
           description={description}
           duration={duration}
+          createdAt={createdAt}
+          status={status}
+          isEditingAnyTask={isEditingAnyTask}
+          editingId={editingId}
           onDeleted={() => onDeleted(id)}
           onToggleTask={() => onToggleTask(id)}
-          onEdit={() => onEditTask(id)}
+          onEditTask={onEditTask}
           onTimerPlay={() => onTimerPlay(id)}
           onTimerStop={() => onTimerStop(id)}
         />

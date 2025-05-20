@@ -10,43 +10,51 @@ const App = () => {
   const timer = useRef(null);
 
   const [state, setState] = useState(() => {
-    const savedTasks = localStorage.getItem("tasks");
-    if (savedTasks) {
-      const parsedTasks = JSON.parse(savedTasks);
-      if (parsedTasks.length > 0) {
-        MAX_ID.current = Math.max(...parsedTasks.map((task) => task.id)) + 1;
+    try {
+      const savedTasks = localStorage.getItem("tasks");
+      if (savedTasks) {
+        const parsedTasks = JSON.parse(savedTasks);
+        if (parsedTasks.length > 0) {
+          MAX_ID.current = Math.max(...parsedTasks.map((task) => task.id)) + 1;
+        }
+
+        return {
+          todoData: parsedTasks,
+          tab: "all",
+        };
       }
 
       return {
-        todoData: parsedTasks,
+        todoData: [
+          {
+            status: "active",
+            description: "Active task",
+            duration: 120,
+            createdAt: new Date(),
+            id: 1,
+          },
+          {
+            status: "active",
+            description: "Active task",
+            duration: 240,
+            createdAt: new Date(),
+            id: 2,
+          },
+          {
+            status: "active",
+            description: "Active task",
+            duration: 360,
+            createdAt: new Date(),
+            id: 3,
+          },
+        ],
         tab: "all",
       };
+    } catch (e) {
+      console.error("Ошибка парсинга сохранённых задач", e);
     }
-
-    return {
-      todoData: [
-        {
-          status: "active",
-          description: "Active task",
-          duration: 120,
-          id: 1,
-        },
-        {
-          status: "active",
-          description: "Active task",
-          duration: 240,
-          id: 2,
-        },
-        {
-          status: "active",
-          description: "Active task",
-          duration: 360,
-          id: 3,
-        },
-      ],
-      tab: "all",
-    };
   });
+  const [editingId, setEditingId] = useState(null);
 
   const timerTask = () => {
     timer.current = setInterval(() => {
@@ -102,6 +110,7 @@ const App = () => {
       duration,
       isRunning,
       id: MAX_ID.current++,
+      createdAt: new Date(),
     };
 
     setState((prevState) => ({
@@ -137,7 +146,11 @@ const App = () => {
   };
 
   const handleEditTask = (id) => {
+    if (editingId !== null && editingId !== id) return;
+
+    setEditingId(id);
     EDIT_ID.current = id;
+
     setState((prevState) => {
       const newData = prevState.todoData.map((item) => {
         if (item.id === id) {
@@ -172,6 +185,8 @@ const App = () => {
 
       return { ...prevState, todoData: newData };
     });
+
+    setEditingId(null);
   };
 
   const onTimerPlay = (id) => {
@@ -223,6 +238,8 @@ const App = () => {
           onChangeTask={onChangeTask}
           onTimerPlay={onTimerPlay}
           onTimerStop={onTimerStop}
+          isEditingAnyTask={editingId !== null}
+          editingId={editingId}
         />
         <Footer
           count={countItems(state)}

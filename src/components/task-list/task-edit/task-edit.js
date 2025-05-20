@@ -9,8 +9,9 @@ const TaskEdit = ({ defaultValue, status, onSubmit }) => {
   useEffect(() => {
     if (status === "editing" && inputRef.current) {
       inputRef.current.focus();
+      setinputValue(defaultValue);
     }
-  }, [status]);
+  }, [status, defaultValue]);
 
   const handleChange = (e) => {
     setinputValue(e.target.value);
@@ -18,16 +19,17 @@ const TaskEdit = ({ defaultValue, status, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(inputValue.trim() === "" ? defaultValue : inputValue);
-    setinputValue("");
+    onSubmit(inputValue.trim());
   };
+
+  if (status !== "editing") return null;
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
         className="edit"
-        defaultValue={defaultValue}
+        value={inputValue}
         onChange={handleChange}
         ref={inputRef}
       />
