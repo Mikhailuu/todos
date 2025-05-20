@@ -1,61 +1,49 @@
 import "./task-edit.css";
-import React, { Component, createRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-export default class TaskEdit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      label: "",
-      inputRef: createRef(),
-    };
-  }
+const TaskEdit = ({ defaultValue, status, onSubmit }) => {
+  const [inputValue, setinputValue] = useState(defaultValue || "");
+  const inputRef = useRef(null);
 
-  componentDidUpdate() {
-    if (this.props.status === "editing") {
-      this.state.inputRef.current.focus();
+  useEffect(() => {
+    if (status === "editing" && inputRef.current) {
+      inputRef.current.focus();
     }
-  }
+  }, [status]);
 
-  static defaultProps = {
-    onSubmit: () => {},
-    defaultValue: "",
-    status: "",
+  const handleChange = (e) => {
+    setinputValue(e.target.value);
   };
 
-  static propTypes = {
-    onSubmit: PropTypes.func,
-    defaultValue: PropTypes.string,
-    status: PropTypes.string,
-  };
-
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
-
-  onSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const label = this.state.label === "" ? this.props.defaultValue : this.state.label;
-    this.props.onSubmit(label);
-
-    this.setState({
-      label: "",
-    }); // надо убрать - заметка пустеет при отправке без редактирования
+    onSubmit(inputValue.trim() === "" ? defaultValue : inputValue);
+    setinputValue("");
   };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          type="text"
-          className="edit"
-          defaultValue={this.props.defaultValue}
-          onChange={this.onLabelChange}
-          ref={this.state.inputRef}
-        />
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        className="edit"
+        defaultValue={defaultValue}
+        onChange={handleChange}
+        ref={inputRef}
+      />
+    </form>
+  );
+};
+
+TaskEdit.defaultProps = {
+  onSubmit: () => {},
+  defaultValue: "",
+  status: "",
+};
+TaskEdit.propTypes = {
+  onSubmit: PropTypes.func,
+  defaultValue: PropTypes.string,
+  status: PropTypes.string,
+};
+
+export default TaskEdit;

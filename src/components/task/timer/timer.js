@@ -1,64 +1,33 @@
 import "./timer.css";
 import { formatDistanceToNow } from "date-fns";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 
-export default class Timer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: props.date
-        ? formatDistanceToNow(new Date(props.date), { includeSeconds: true })
-        : "Invalid date",
-    };
-    this.timer = null;
-  }
+const Timer = ({ date, onTimerPlay, onTimerStop, duration }) => {
+  const [state, setState] = useState({
+    date: date ? formatDistanceToNow(new Date(date), { includeSeconds: true }) : "Invalid date",
+    timer: null,
+  });
 
-  static defaultProps = {
-    formatDistanceToNow: () => {},
-    date: new Date(),
-    duration: 600,
+  useEffect(() => {
+    const distanceDate = setInterval(() => {
+      setState({
+        date: date ? formatDistanceToNow(new Date(date), { includeSeconds: true }) : "Invalid date",
+      });
+    }, 1000);
+
+    return () => clearInterval(distanceDate);
+  }, []);
+
+  const handlePlay = () => {
+    onTimerPlay();
   };
 
-  static propTypes = {
-    formatDistanceToNow: PropTypes.func,
-    date: PropTypes.instanceOf(Date),
-    duration: PropTypes.number,
+  const handlePause = () => {
+    onTimerStop();
   };
 
-  componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 30000);
-  }
-  /*
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isRunning && this.state.remaining > 0 && !prevState.isRunning) {
-      this.play();
-    } else if (this.state.remaining === 0 && prevState.remaining > 0) {
-      this.stop();
-    }
-  }
-*/
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  tick() {
-    this.setState({
-      date: this.props.date
-        ? formatDistanceToNow(new Date(this.props.date), { includeSeconds: true })
-        : "Invalid date",
-    });
-  }
-
-  handlePlay = () => {
-    this.props.onTimerPlay();
-  };
-
-  handlePause = () => {
-    this.props.onTimerStop();
-  };
-
-  getTimeRemaining = (remaining) => {
+  const getTimeRemaining = (remaining) => {
     if (Number.isNaN(remaining)) return `00:00`;
     const min = Math.floor(remaining / 60);
     let sec = Math.floor(remaining % 60);
@@ -66,16 +35,31 @@ export default class Timer extends Component {
     return `${min}:${sec}`;
   };
 
-  render() {
-    return (
-      <React.Fragment>
-        <span className="description">
-          <button className="icon icon-play" onClick={this.handlePlay}></button>
-          <button className="icon icon-pause" onClick={this.handlePause}></button>
-          {this.getTimeRemaining(this.props.duration)}
-        </span>
-        <span className="description">{this.state.date}</span>
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <span className="description">
+        <button className="icon icon-play" onClick={handlePlay}></button>
+        <button className="icon icon-pause" onClick={handlePause}></button>
+        {getTimeRemaining(duration)}
+      </span>
+      <span className="description">{state.date}</span>
+    </React.Fragment>
+  );
+};
+
+Timer.defaultProps = {
+  formatDistanceToNow: () => {},
+  date: new Date(),
+  duration: 600,
+  onTimerPlay: () => {},
+  onTimerStop: () => {},
+};
+Timer.propTypes = {
+  formatDistanceToNow: PropTypes.func,
+  date: PropTypes.instanceOf(Date),
+  duration: PropTypes.number,
+  onTimerPlay: PropTypes.func,
+  onTimerStop: PropTypes.func,
+};
+
+export default Timer;

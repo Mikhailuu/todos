@@ -1,84 +1,80 @@
 import "./new-task-form.css";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-export default class NewTaskForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      label: "",
-      min: "",
-      sec: "",
-    };
-  }
+const NewTaskForm = ({ onAddItem }) => {
+  const [state, setState] = useState({
+    label: "",
+    min: "",
+    sec: "",
+  });
 
-  static defaultProps = {
-    onAddItem: () => {},
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  static propTypes = {
-    onAddItem: PropTypes.func,
-  };
-
-  onChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
 
-    if (this.state.label !== "")
-      this.props.onAddItem(this.state.label, this.state.min * 60 + Number(this.state.sec), false);
+    if (state.label !== "") onAddItem(state.label, state.min * 60 + Number(state.sec), false);
 
-    this.setState({
+    setState({
       label: "",
       min: "",
       sec: "",
     });
   };
 
-  onKeyDown = (event) => {
+  const onKeyDown = (event) => {
     if (event.key === "Enter") {
-      this.onSubmit(event);
+      onSubmit(event);
     }
   };
-  render() {
-    return (
-      <form className="new-todo-form" onKeyDown={this.onKeyDown}>
-        <input
-          type="text"
-          className="new-todo"
-          name="label"
-          placeholder="Task"
-          autoFocus
-          onChange={(e) => this.onChange(e)}
-          value={this.state.label}
-        />
-        <input
-          type="text"
-          inputMode="numeric"
-          min="0"
-          className="new-todo-form__timer"
-          name="min"
-          placeholder="Min"
-          autoFocus
-          onChange={(e) => this.onChange(e)}
-          value={this.state.min}
-        />
-        <input
-          type="text"
-          inputMode="numeric"
-          min="0"
-          className="new-todo-form__timer"
-          name="sec"
-          placeholder="Sec"
-          autoFocus
-          onChange={(e) => this.onChange(e)}
-          value={this.state.sec}
-        />
-      </form>
-    );
-  }
-}
+  return (
+    <form className="new-todo-form" onKeyDown={onKeyDown}>
+      <input
+        type="text"
+        className="new-todo"
+        name="label"
+        placeholder="Task"
+        autoFocus
+        onChange={(e) => onChange(e)}
+        value={state.label}
+      />
+      <input
+        type="text"
+        inputMode="numeric"
+        min="0"
+        className="new-todo-form__timer"
+        name="min"
+        placeholder="Min"
+        autoFocus
+        onChange={(e) => onChange(e)}
+        value={state.min}
+      />
+      <input
+        type="text"
+        inputMode="numeric"
+        min="0"
+        className="new-todo-form__timer"
+        name="sec"
+        placeholder="Sec"
+        autoFocus
+        onChange={(e) => onChange(e)}
+        value={state.sec}
+      />
+    </form>
+  );
+};
+NewTaskForm.defaultProps = {
+  onAddItem: () => {},
+};
+NewTaskForm.propTypes = {
+  onAddItem: PropTypes.func,
+};
+
+export default NewTaskForm;
